@@ -1,0 +1,39 @@
+let search = document.querySelector("#search");
+search.addEventListener("keyup", (e) => {
+  let searchText = e.target.value;
+  SearchMovie(searchText);
+  let formText = document.getElementById("divBlock");
+  formText.style.display = "none";
+  search.classList.add("afterkeyPress");
+  document.querySelector("#formBlock").classList.add("afterkey_formBlock");
+});
+function SearchMovie(searchText) {
+  let imdbApi = `http://www.omdbapi.com/?s=${searchText}&apikey=62c4b46`;
+  window
+    .fetch(imdbApi)
+    .then((data) => {
+      data
+        .json()
+        .then((movieData) => {
+          let movies = movieData.Search;
+          let output = {};
+          for (let movie of movies) {
+            output += `
+            <div>
+                 <img src="${movie.Poster}"/>
+                 <h1>${movie.Title}</h1>
+                 <p>${movie.Year}</p>
+            </div>  `;
+          }
+          [...document.images].forEach((img) => {
+            console.log(img);
+            if (img.src === "N/A") {
+              img.src = "images/ex.jpg";
+            }
+          });
+          document.getElementById("template").innerHTML = output;
+        })
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
+}
